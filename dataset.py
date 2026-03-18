@@ -23,7 +23,7 @@ Each folder name represents a class label.
 
 import os
 from torchvision import datasets, transforms
-from torch.utils.data import DataLoader
+from torch.utils.data import DataLoader, random_split
 
 
 # ======================== Image preprocessing and augmentation ========================
@@ -76,7 +76,7 @@ def get_train_dataset(train_dir: str):
 
 
 # ======================= DataLoader ========================
-def get_train_loader(train_dir: str, batch_size: int = 32):
+def get_train_loader(train_dir: str, batch_size: int = 32, val_split: float = 0):
     """
     Creates a DataLoader for the training dataset.
 
@@ -95,12 +95,24 @@ def get_train_loader(train_dir: str, batch_size: int = 32):
     """
 
     dataset = get_train_dataset(train_dir)
+    
+    val_size = int(len(dataset) * val_split)
+    train_size = len(dataset) - val_size
 
-    loader = DataLoader(
-        dataset,
+    train_dataset, val_dataset = random_split(dataset, [train_size, val_size])
+
+    train_loader = DataLoader(
+        train_dataset,
         batch_size=batch_size,
-        shuffle=True,      # shuffle improves training
-        num_workers=2      # parallel data loading
+        shuffle=True,
+        num_workers=2
     )
 
-    return loader
+    val_loader = DataLoader(
+        val_dataset,
+        batch_size=batch_size,
+        shuffle=False,
+        num_workers=2
+    )
+
+    return train_loader, val_loader
