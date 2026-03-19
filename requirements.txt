@@ -1,0 +1,14 @@
+# Install with: pip install -r requirements.txt
+# Requires Python 3.12 or higher
+#
+# Note:
+# - If you use `google.colab` everything is provided by Google Colab
+#   and is not meant to be installed from this file.
+
+numpy>=1.24.0
+matplotlib>=3.7.0
+Pillow>=10.0.0
+scikit-learn>=1.3.0
+torch>=2.2.0
+torchvision>=0.17.0
+jupyter>=1.0.0
