@@ -76,7 +76,7 @@ def get_train_dataset(train_dir: str):
 
 
 # ======================= DataLoader ========================
-def get_train_loader(train_dir: str, batch_size: int = 32, val_split: float = 0):
+def get_train_loader(train_dir: str, batch_size: int = 32, val_split: float = 0.2, test_split: float = 0.2):
     """
     Creates a DataLoader for the training dataset.
 
@@ -97,9 +97,10 @@ def get_train_loader(train_dir: str, batch_size: int = 32, val_split: float = 0)
     dataset = get_train_dataset(train_dir)
     
     val_size = int(len(dataset) * val_split)
-    train_size = len(dataset) - val_size
+    test_size = int(len(dataset) * test_split)
+    train_size = len(dataset) - val_size - test_size
 
-    train_dataset, val_dataset = random_split(dataset, [train_size, val_size])
+    train_dataset, val_dataset, test_dataset = random_split(dataset, [train_size, val_size, test_size])
 
     train_loader = DataLoader(
         train_dataset,
@@ -114,5 +115,12 @@ def get_train_loader(train_dir: str, batch_size: int = 32, val_split: float = 0)
         shuffle=False,
         num_workers=2
     )
+    
+    test_loader = DataLoader(
+        test_dataset,
+        batch_size=batch_size,
+        shuffle=False,
+        num_workers=2
+    )
 
-    return train_loader, val_loader
+    return train_loader, val_loader, test_loader
